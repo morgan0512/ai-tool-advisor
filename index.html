@@ -5,72 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <title>AI Tool Advisor</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>AI Tool Advisor</title>
     <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
         font-family: Arial, sans-serif;
-        background-color: #f5f7ff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        background-color: #0a0a0a;
+        color: #ffffff;
         min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-        box-sizing: border-box;
+        padding: 40px 20px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 800px;
+        margin: 0 auto 40px;
+      }
+      .logo {
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+      .logo span { color: #6c63ff; }
+      .badge {
+        font-size: 0.85rem;
+        color: #999;
+      }
+      .hero {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 50px;
+      }
+      .hero h1 {
+        font-size: 2.8rem;
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+      .hero h1 span { color: #6c63ff; }
+      .hero p {
+        color: #999;
+        font-size: 1.1rem;
+        line-height: 1.6;
       }
       .card {
-        background: white;
+        background: #ffffff;
+        color: #333;
         border-radius: 16px;
-        padding: 40px;
-        max-width: 600px;
-        width: 90%;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        padding: 32px;
+        max-width: 800px;
+        margin: 0 auto 24px;
+      }
+      .card-label {
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+        color: #999;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+      }
+      .tiles {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .tile {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 20px 12px;
         text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.95rem;
+        color: #333;
+        background: white;
       }
-      h1 {
-        color: #3a3a8c;
-        font-size: 2rem;
-        margin-bottom: 10px;
+      .tile:hover {
+        border-color: #6c63ff;
+        background: #f5f3ff;
       }
-      p {
-        color: #666;
-        font-size: 1.1rem;
-        margin-bottom: 30px;
+      .tile.selected {
+        border-color: #6c63ff;
+        background: #ede9ff;
+        color: #6c63ff;
+        font-weight: bold;
+      }
+      .tile .emoji {
+        font-size: 1.8rem;
+        display: block;
+        margin-bottom: 8px;
       }
       textarea {
         width: 100%;
         height: 120px;
-        border: 2px solid #d0d4ff;
+        border: 2px solid #e0e0e0;
         border-radius: 10px;
-        padding: 12px;
+        padding: 14px;
         font-size: 1rem;
         resize: none;
-        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin-top: 8px;
       }
-      button {
+      textarea:focus {
+        outline: none;
+        border-color: #6c63ff;
+      }
+      button.main-btn {
         margin-top: 16px;
-        background-color: #3a3a8c;
+        background-color: #6c63ff;
         color: white;
         border: none;
-        padding: 14px 32px;
+        padding: 16px 32px;
         border-radius: 10px;
         font-size: 1rem;
         cursor: pointer;
         width: 100%;
+        font-weight: bold;
+        transition: background 0.2s;
       }
-      button:hover {
-        background-color: #2e2e70;
-      }
-     #result {
-        margin-top: 30px;
-        text-align: left;
-        background: #f0f2ff;
-        border-radius: 10px;
-        padding: 24px;
+      button.main-btn:hover { background-color: #5a52d5; }
+      #loading {
+        text-align: center;
+        color: #6c63ff;
         font-size: 1rem;
+        display: none;
+        padding: 20px;
+      }
+      #result {
+        background: white;
         color: #333;
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 800px;
+        margin: 0 auto 24px;
         display: none;
         line-height: 1.7;
       }
@@ -90,59 +156,111 @@
         text-align: left;
       }
       #result th {
-        background: #3a3a8c;
+        background: #6c63ff;
         color: white;
       }
       #followup {
-        margin-top: 20px;
+        max-width: 800px;
+        margin: 0 auto 24px;
         display: none;
       }
       #followup textarea {
-        width: 100%;
-        height: 80px;
-        border: 2px solid #d0d4ff;
-        border-radius: 10px;
-        padding: 12px;
-        font-size: 1rem;
-        resize: none;
-        box-sizing: border-box;
+        background: white;
       }
       #followup button {
         margin-top: 10px;
-        background-color: #5a5aad;
-      }
-      #loading {
-        margin-top: 20px;
-        color: #3a3a8c;
-        display: none;
+        background-color: #5a52d5;
+        color: white;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        width: 100%;
+        font-weight: bold;
       }
     </style>
   </head>
   <body>
+
+    <header>
+      <div class="logo"><span>AI</span>Tool Advisor</div>
+      <div class="badge">Free tool · no account needed</div>
+    </header>
+
+    <div class="hero">
+      <h1>What could AI <span>actually do</span> for you?</h1>
+      <p>Tell us your idea. We'll recommend the right AI tools, explain the costs in plain English, and help you get started — no tech knowledge needed.</p>
+    </div>
+
     <div class="card">
-      <h1>🤖 AI Tool Advisor</h1>
-      <p>Describe your idea or project and get personalized AI tool recommendations.</p>
-      <textarea id="idea" placeholder="Example: I want to build a chatbot for my small business..."></textarea>
-      <button onclick="getRecommendation()">Find My AI Tools →</button>
-      <p id="loading">🤔 Thinking...</p>
-      <div id="result"></div>
-      <div id="followup">
-        <textarea id="followupIdea" placeholder="Ask a follow-up question..."></textarea>
-        <button onclick="getRecommendation()">Ask Follow-up →</button>
+      <div class="card-label">What do you want to do?</div>
+      <div class="tiles">
+        <div class="tile" onclick="selectTile(this, 'Start a business or side hustle')">
+          <span class="emoji">🚀</span>Start a business or side hustle
+        </div>
+        <div class="tile" onclick="selectTile(this, 'Create content or grow social media')">
+          <span class="emoji">📱</span>Create content or grow social media
+        </div>
+        <div class="tile" onclick="selectTile(this, 'Build a website or app')">
+          <span class="emoji">💻</span>Build a website or app
+        </div>
+        <div class="tile" onclick="selectTile(this, 'Save time at my job or business')">
+          <span class="emoji">⏱️</span>Save time at my job or business
+        </div>
+        <div class="tile" onclick="selectTile(this, 'Create images or videos with AI')">
+          <span class="emoji">🎨</span>Create images or videos with AI
+        </div>
+        <div class="tile" onclick="selectTile(this, 'I have an idea but not sure where to start')">
+          <span class="emoji">💡</span>I have an idea but not sure where to start
+        </div>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Describe what you want to do</div>
+      <textarea id="idea" placeholder="Example: I want to start a side hustle selling custom products online and need AI to help me write descriptions and handle customer messages..."></textarea>
+    </div>
+
+    <div style="max-width:800px; margin: 0 auto;">
+      <button class="main-btn" onclick="getRecommendation()">Find My AI Tools →</button>
+    </div>
+
+    <br/>
+    <div id="loading">🤔 Finding the best AI tools for you...</div>
+    <div id="result"></div>
+    <div id="followup">
+      <textarea id="followupIdea" placeholder="Ask a follow-up question..."></textarea>
+      <button onclick="getRecommendation()">Ask Follow-up →</button>
+    </div>
 
     <script>
+      let selectedCategory = '';
+
+      function selectTile(el, category) {
+        document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedCategory = category;
+        document.getElementById('idea').placeholder = `Tell us more about your ${category.toLowerCase()} idea...`;
+      }
+
       async function getRecommendation() {
-        const idea = document.getElementById('idea').value;
+        const idea = document.getElementById('idea').value ||
+                     document.getElementById('followupIdea').value;
         if (!idea) return alert('Please describe your idea first!');
+
+        const fullIdea = selectedCategory
+          ? `Category: ${selectedCategory}\n\nUser's description: ${idea}`
+          : idea;
 
         document.getElementById('loading').style.display = 'block';
         document.getElementById('result').style.display = 'none';
+        document.getElementById('followup').style.display = 'none';
 
         const response = await fetch('/api/recommend', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idea })
+          body: JSON.stringify({ idea: fullIdea })
         });
 
         const data = await response.json();
@@ -152,5 +270,6 @@
         document.getElementById('followup').style.display = 'block';
       }
     </script>
+
   </body>
 </html>
