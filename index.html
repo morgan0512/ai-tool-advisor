@@ -1,10 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>AI Tool Advisor</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f7ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        text-align: center;
+      }
+      h1 {
+        color: #3a3a8c;
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      p {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+      }
+      textarea {
+        width: 100%;
+        height: 120px;
+        border: 2px solid #d0d4ff;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        resize: none;
+        box-sizing: border-box;
+      }
+      button {
+        margin-top: 16px;
+        background-color: #3a3a8c;
+        color: white;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        width: 100%;
+      }
+      button:hover {
+        background-color: #2e2e70;
+      }
+    </style>
   </head>
   <body>
-    <h1>Welcome to AI Tool Advisor</h1>
-    <p>Describe your idea and get the best AI tool recommendations.</p>
+    <div class="card">
+      <h1>🤖 AI Tool Advisor</h1>
+      <p>Describe your idea or project and get personalized AI tool recommendations.</p>
+      <textarea placeholder="Example: I want to build a chatbot for my small business..."></textarea>
+      <button>Find My AI Tools →</button>
+    </div>
   </body>
 </html>
