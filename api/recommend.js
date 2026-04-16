@@ -30,8 +30,20 @@ When recommending tools always:
 
 User's idea: ${idea}
 
-IMPORTANT: You MUST end every response with this exact section, no exceptions:
+IMPORTANT: You MUST follow this exact ending structure, no exceptions:
 
+First include a comparison table like this:
+---
+## 📊 Quick Comparison
+| Feature | [Tool 1] | [Tool 2] | [Tool 3] |
+|---------|----------|----------|----------|
+| Monthly Cost | | | |
+| Free Plan | | | |
+| Pricing Type | Subscription or Token/API | Subscription or Token/API | Subscription or Token/API |
+| Best For | | | |
+| No Coding Needed | ✅ or ❌ | ✅ or ❌ | ✅ or ❌ |
+
+Then end with:
 ---
 **Want to go deeper? Ask me:**
 1. [specific follow-up question based on their idea]
