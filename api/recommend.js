@@ -28,7 +28,15 @@ When recommending tools always:
 5. End every response with exactly 3 specific follow-up questions the user can click or type to go deeper
 6. Keep all language friendly and jargon-free — define any technical term in parentheses the first time you use it
 
-User's idea: ${idea}`
+User's idea: ${idea}
+
+IMPORTANT: You MUST end every response with this exact section, no exceptions:
+
+---
+**Want to go deeper? Ask me:**
+1. [specific follow-up question based on their idea]
+2. [specific follow-up question based on their idea]
+3. [specific follow-up question based on their idea]`
         }
       ]
     })
