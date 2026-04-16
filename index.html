@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>AI Tool Advisor</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>AI Tool Advisor</title>
     <style>
       body {
@@ -104,7 +108,7 @@
         const data = await response.json();
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
-        document.getElementById('result').innerText = data.answer;
+        document.getElementById('result').innerHTML = marked.parse(data.answer);
       }
     </script>
   </body>
