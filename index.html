@@ -63,16 +63,53 @@
       button:hover {
         background-color: #2e2e70;
       }
-      #result {
+     #result {
         margin-top: 30px;
         text-align: left;
         background: #f0f2ff;
         border-radius: 10px;
-        padding: 20px;
+        padding: 24px;
         font-size: 1rem;
         color: #333;
         display: none;
-        white-space: pre-wrap;
+        line-height: 1.7;
+      }
+      #result h1, #result h2, #result h3 {
+        color: #3a3a8c;
+        margin-top: 20px;
+        margin-bottom: 8px;
+      }
+      #result table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0;
+      }
+      #result th, #result td {
+        border: 1px solid #d0d4ff;
+        padding: 8px 12px;
+        text-align: left;
+      }
+      #result th {
+        background: #3a3a8c;
+        color: white;
+      }
+      #followup {
+        margin-top: 20px;
+        display: none;
+      }
+      #followup textarea {
+        width: 100%;
+        height: 80px;
+        border: 2px solid #d0d4ff;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        resize: none;
+        box-sizing: border-box;
+      }
+      #followup button {
+        margin-top: 10px;
+        background-color: #5a5aad;
       }
       #loading {
         margin-top: 20px;
@@ -89,7 +126,10 @@
       <button onclick="getRecommendation()">Find My AI Tools →</button>
       <p id="loading">🤔 Thinking...</p>
       <div id="result"></div>
-    </div>
+      <div id="followup">
+        <textarea id="followupIdea" placeholder="Ask a follow-up question..."></textarea>
+        <button onclick="getRecommendation()">Ask Follow-up →</button>
+      </div>
 
     <script>
       async function getRecommendation() {
@@ -109,6 +149,7 @@
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
         document.getElementById('result').innerHTML = marked.parse(data.answer);
+        document.getElementById('followup').style.display = 'block';
       }
     </script>
   </body>
