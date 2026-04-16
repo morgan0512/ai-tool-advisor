@@ -11,8 +11,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
       }
       .card {
         background: white;
@@ -57,14 +59,53 @@
       button:hover {
         background-color: #2e2e70;
       }
+      #result {
+        margin-top: 30px;
+        text-align: left;
+        background: #f0f2ff;
+        border-radius: 10px;
+        padding: 20px;
+        font-size: 1rem;
+        color: #333;
+        display: none;
+        white-space: pre-wrap;
+      }
+      #loading {
+        margin-top: 20px;
+        color: #3a3a8c;
+        display: none;
+      }
     </style>
   </head>
   <body>
     <div class="card">
       <h1>🤖 AI Tool Advisor</h1>
       <p>Describe your idea or project and get personalized AI tool recommendations.</p>
-      <textarea placeholder="Example: I want to build a chatbot for my small business..."></textarea>
-      <button>Find My AI Tools →</button>
+      <textarea id="idea" placeholder="Example: I want to build a chatbot for my small business..."></textarea>
+      <button onclick="getRecommendation()">Find My AI Tools →</button>
+      <p id="loading">🤔 Thinking...</p>
+      <div id="result"></div>
     </div>
+
+    <script>
+      async function getRecommendation() {
+        const idea = document.getElementById('idea').value;
+        if (!idea) return alert('Please describe your idea first!');
+
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('result').style.display = 'none';
+
+        const response = await fetch('/api/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idea })
+        });
+
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').innerText = data.answer;
+      }
+    </script>
   </body>
 </html>
