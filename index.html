@@ -285,8 +285,9 @@
       <p>Most small businesses can start with AI for $0–$50/month. Many of the best tools have free plans. The key is matching the right tool to your specific need — not paying for features you don't use. Use the advisor above to get a cost estimate for your exact situation.</p>
     </div>
 
-    <script>
+<script>
       let selectedCategory = '';
+      let userEmail = '';
 
       function selectTile(el, category) {
         document.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
@@ -294,55 +295,6 @@
         selectedCategory = category;
         document.getElementById('idea').placeholder = `Tell us more about your ${category.toLowerCase()} idea...`;
       }
-
-      async function getRecommendation(isFollowup = false) {
-        const idea = isFollowup
-          ? document.getElementById('followupIdea').value
-          : document.getElementById('idea').value;
-        if (!idea) return alert('Please describe your idea first!');
-
-        const fullIdea = isFollowup
-          ? `The user already received recommendations. They are now asking a follow-up question: ${idea}`
-          : selectedCategory
-          ? `Category: ${selectedCategory}\n\nUser's description: ${idea}`
-          : idea;
-
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('result').style.display = 'none';
-        document.getElementById('followup').style.display = 'none';
-
-        const response = await fetch('/api/recommend', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idea: fullIdea })
-        });
-
-        const data = await response.json();
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('result').style.display = 'block';
-        // Remove the "Want to go deeper" section from the displayed result
-        const cleanAnswer = data.answer.replace(/---\s*\*\*Want to go deeper\?[^`]*/s, '').trim();
-        const parsed = marked.parse(cleanAnswer);
-        document.getElementById('result').innerHTML = parsed;
-
-        // Extract follow-up questions and make them clickable
-        const lines = data.answer.split('\n');
-        const questions = lines.filter(l => l.match(/^\d\.\s+.+\?/)).map(l => l.replace(/^\d\.\s+/, '').replace(/["""]/g, ''));
-        const linksBox = document.getElementById('followup-links');
-        if (questions.length > 0) {
-          linksBox.style.display = 'block';
-          linksBox.innerHTML = '<p style="color:#999; font-size:0.85rem; margin-bottom:10px; max-width:800px; margin-left:auto; margin-right:auto;">💬 Want to go deeper? Click a question:</p>' +
-            questions.map(q => `<a onclick="askFollowup('${q.replace(/'/g, "\\'")}')">${q}</a>`).join('');
-        }
-        if (userEmail) {
-          document.getElementById('followup').style.display = 'block';
-        }
-        document.getElementById('cta-box').style.display = 'block';
-        document.getElementById('cta-box').style.display = 'block';
-      }
-  let userEmail = '';
-
-      let userEmail = '';
 
       function submitEmail() {
         const email = document.getElementById('emailInput').value;
@@ -365,6 +317,58 @@
         }
         document.getElementById('followupIdea').value = question;
         getRecommendation(true);
+      }
+
+      async function getRecommendation(isFollowup = false) {
+        const idea = isFollowup
+          ? document.getElementById('followupIdea').value
+          : document.getElementById('idea').value;
+        if (!idea) return alert('Please describe your idea first!');
+
+        const fullIdea = isFollowup
+          ? `The user already received recommendations. They are now asking a follow-up question: ${idea}`
+          : selectedCategory
+          ? `Category: ${selectedCategory}\n\nUser's description: ${idea}`
+          : idea;
+
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('followup').style.display = 'none';
+        document.getElementById('followup-links').style.display = 'none';
+
+        const response = await fetch('/api/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idea: fullIdea })
+        });
+
+        const data = await response.json();
+
+        // Remove the "Want to go deeper" section from displayed result
+        const cleanAnswer = data.answer.replace(/---\s*\*\*Want to go deeper\?[\s\S]*/i, '').trim();
+        const parsed = marked.parse(cleanAnswer);
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').innerHTML = parsed;
+
+        // Extract follow-up questions and make them clickable
+        const lines = data.answer.split('\n');
+        const questions = lines
+          .filter(l => l.match(/^\d\.\s+.+\?/))
+          .map(l => l.replace(/^\d\.\s+/, '').replace(/["""]/g, '').trim());
+
+        const linksBox = document.getElementById('followup-links');
+        if (questions.length > 0) {
+          linksBox.style.display = 'block';
+          linksBox.innerHTML = '<p style="color:#999; font-size:0.85rem; margin-bottom:10px;">💬 Want to go deeper? Click a question:</p>' +
+            questions.map(q => `<a onclick="askFollowup('${q.replace(/'/g, "\\'")}')">${q}</a>`).join('');
+        }
+
+        if (userEmail) {
+          document.getElementById('followup').style.display = 'block';
+        }
+        document.getElementById('cta-box').style.display = 'block';
       }
     </script>
 
