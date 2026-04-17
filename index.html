@@ -320,7 +320,9 @@
         const data = await response.json();
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
-        const parsed = marked.parse(data.answer);
+        // Remove the "Want to go deeper" section from the displayed result
+        const cleanAnswer = data.answer.replace(/---\s*\*\*Want to go deeper\?[^`]*/s, '').trim();
+        const parsed = marked.parse(cleanAnswer);
         document.getElementById('result').innerHTML = parsed;
 
         // Extract follow-up questions and make them clickable
@@ -340,6 +342,8 @@
       }
   let userEmail = '';
 
+      let userEmail = '';
+
       function submitEmail() {
         const email = document.getElementById('emailInput').value;
         if (!email) return alert('Please enter your email address!');
@@ -349,6 +353,7 @@
           <p style="color:#e0e0ff;">We'll send your AI tool report to <strong>${email}</strong> shortly.</p>
         `;
         document.getElementById('followup').style.display = 'block';
+        document.getElementById('followup').scrollIntoView({ behavior: 'smooth' });
       }
 
       function askFollowup(question) {
