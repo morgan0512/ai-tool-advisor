@@ -248,12 +248,15 @@
         document.getElementById('idea').placeholder = `Tell us more about your ${category.toLowerCase()} idea...`;
       }
 
-      async function getRecommendation() {
-        const idea = document.getElementById('idea').value ||
-                     document.getElementById('followupIdea').value;
+      async function getRecommendation(isFollowup = false) {
+        const idea = isFollowup
+          ? document.getElementById('followupIdea').value
+          : document.getElementById('idea').value;
         if (!idea) return alert('Please describe your idea first!');
 
-        const fullIdea = selectedCategory
+        const fullIdea = isFollowup
+          ? `The user already received recommendations. They are now asking a follow-up question: ${idea}`
+          : selectedCategory
           ? `Category: ${selectedCategory}\n\nUser's description: ${idea}`
           : idea;
 
