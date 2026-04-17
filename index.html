@@ -233,9 +233,34 @@
     <br/>
     <div id="loading">🤔 Finding the best AI tools for you...</div>
     <div id="result"></div>
-    <div id="followup">
+   <div id="followup">
       <textarea id="followupIdea" placeholder="Ask a follow-up question..."></textarea>
       <button onclick="getRecommendation(true)">Ask Follow-up →</button>
+    </div>
+
+    <div id="cta-box" style="display:none; max-width:800px; margin: 0 auto 40px; background: linear-gradient(135deg, #6c63ff, #3a3a8c); border-radius: 16px; padding: 32px; text-align: center;">
+      <h2 style="color:white; margin-bottom:12px;">📬 Want to save your recommendations?</h2>
+      <p style="color:#e0e0ff; margin-bottom:24px;">Get your full AI tool report sent to your inbox — plus weekly plain-English updates on new AI tools for people like you.</p>
+      <input type="email" id="emailInput" placeholder="your@email.com" style="width:100%; padding:14px; border-radius:10px; border:none; font-size:1rem; margin-bottom:12px; box-sizing:border-box;"/>
+      <button onclick="submitEmail()" style="width:100%; padding:14px; background:white; color:#6c63ff; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer;">Send Me My Report →</button>
+      <p style="color:#c0c0ff; font-size:0.8rem; margin-top:12px;">Free forever. No spam. Unsubscribe anytime.</p>
+    </div>
+
+    <!-- SEO Content Section -->
+    <div style="max-width:800px; margin: 40px auto; background: #111; border-radius: 16px; padding: 32px; color: #ccc;">
+      <h2 style="color:white; margin-bottom:24px; font-size:1.4rem;">Common questions about AI tools</h2>
+      
+      <h3 style="color:#a0a0ff; margin-bottom:8px;">What is the difference between ChatGPT and Claude?</h3>
+      <p style="margin-bottom:24px;">ChatGPT is made by OpenAI and Claude is made by Anthropic. Both are AI assistants you can chat with. ChatGPT is available as a $20/month subscription (ChatGPT Plus) or via API (pay per use). Claude is also available as a subscription or API. The best choice depends on your specific task — describe your idea above and we'll tell you which fits better.</p>
+
+      <h3 style="color:#a0a0ff; margin-bottom:8px;">What does "API pricing" mean for AI tools?</h3>
+      <p style="margin-bottom:24px;">API pricing means you pay based on how much you use the tool — like a phone bill. Subscription pricing means you pay a flat monthly fee — like Netflix. For most small business owners starting out, a subscription is more predictable. API pricing makes sense when you need to build something custom or use AI inside your own product.</p>
+
+      <h3 style="color:#a0a0ff; margin-bottom:8px;">Which AI tool is best for a small business with no tech experience?</h3>
+      <p style="margin-bottom:24px;">It depends on what you want to do. For writing and content: ChatGPT Plus ($20/month) or Claude.ai ($20/month). For images: Canva AI (free) or Midjourney ($10/month). For automating tasks: Zapier (free to start). Describe your specific idea above and get a personalized recommendation in seconds.</p>
+
+      <h3 style="color:#a0a0ff; margin-bottom:8px;">How much does it cost to add AI to my small business?</h3>
+      <p>Most small businesses can start with AI for $0–$50/month. Many of the best tools have free plans. The key is matching the right tool to your specific need — not paying for features you don't use. Use the advisor above to get a cost estimate for your exact situation.</p>
     </div>
 
     <script>
@@ -275,6 +300,15 @@
         document.getElementById('result').style.display = 'block';
         document.getElementById('result').innerHTML = marked.parse(data.answer);
         document.getElementById('followup').style.display = 'block';
+        document.getElementById('cta-box').style.display = 'block';
+      }
+   function submitEmail() {
+        const email = document.getElementById('emailInput').value;
+        if (!email) return alert('Please enter your email address!');
+        document.getElementById('cta-box').innerHTML = `
+          <h2 style="color:white; margin-bottom:12px;">🎉 You're all set!</h2>
+          <p style="color:#e0e0ff;">We'll send your AI tool report to <strong>${email}</strong> shortly. Keep an eye on your inbox!</p>
+        `;
       }
     </script>
 
