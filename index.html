@@ -168,7 +168,28 @@
         margin: 0 auto 24px;
         display: none;
       }
-      #followup textarea {
+      .followup-questions {
+        max-width: 800px;
+        margin: 0 auto 16px;
+        display: none;
+      }
+      .followup-questions a {
+        display: block;
+        background: #1a1a2e;
+        color: #a0a0ff;
+        padding: 14px 20px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.95rem;
+        border: 1px solid #3a3a8c;
+        transition: all 0.2s;
+      }
+      .followup-questions a:hover {
+        background: #2a2a4e;
+        color: white;
+      }      #followup textarea {
         background: white;
       }
       #followup button {
@@ -233,6 +254,7 @@
     <br/>
     <div id="loading">🤔 Finding the best AI tools for you...</div>
     <div id="result"></div>
+    <div class="followup-questions" id="followup-links"></div>
    <div id="followup">
       <textarea id="followupIdea" placeholder="Ask a follow-up question..."></textarea>
       <button onclick="getRecommendation(true)">Ask Follow-up →</button>
@@ -298,17 +320,46 @@
         const data = await response.json();
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
-        document.getElementById('result').innerHTML = marked.parse(data.answer);
-        document.getElementById('followup').style.display = 'block';
+        const parsed = marked.parse(data.answer);
+        document.getElementById('result').innerHTML = parsed;
+
+        // Extract follow-up questions and make them clickable
+        const lines = data.answer.split('\n');
+        const questions = lines.filter(l => l.match(/^\d\.\s+.+\?/)).map(l => l.replace(/^\d\.\s+/, '').replace(/["""]/g, ''));
+        const linksBox = document.getElementById('followup-links');
+        if (questions.length > 0) {
+          linksBox.style.display = 'block';
+          linksBox.innerHTML = '<p style="color:#999; font-size:0.85rem; margin-bottom:10px; max-width:800px; margin-left:auto; margin-right:auto;">💬 Want to go deeper? Click a question:</p>' +
+            questions.map(q => `<a onclick="askFollowup('${q.replace(/'/g, "\\'")}')">${q}</a>`).join('');
+        }
+        if (userEmail) {
+          document.getElementById('followup').style.display = 'block';
+        }
+        document.getElementById('cta-box').style.display = 'block';
         document.getElementById('cta-box').style.display = 'block';
       }
-   function submitEmail() {
+  let userEmail = '';
+
+      function submitEmail() {
         const email = document.getElementById('emailInput').value;
         if (!email) return alert('Please enter your email address!');
+        userEmail = email;
         document.getElementById('cta-box').innerHTML = `
           <h2 style="color:white; margin-bottom:12px;">🎉 You're all set!</h2>
-          <p style="color:#e0e0ff;">We'll send your AI tool report to <strong>${email}</strong> shortly. Keep an eye on your inbox!</p>
+          <p style="color:#e0e0ff;">We'll send your AI tool report to <strong>${email}</strong> shortly.</p>
         `;
+        document.getElementById('followup').style.display = 'block';
+      }
+
+      function askFollowup(question) {
+        if (!userEmail) {
+          document.getElementById('cta-box').style.display = 'block';
+          document.getElementById('cta-box').scrollIntoView({ behavior: 'smooth' });
+          alert('Enter your email above to unlock follow-up questions!');
+          return;
+        }
+        document.getElementById('followupIdea').value = question;
+        getRecommendation(true);
       }
     </script>
 
